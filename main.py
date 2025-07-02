@@ -23,7 +23,7 @@ def main():
     if response.status_code == 200:
         with open(save_directory, 'wb') as f:
             f.write(response.content)
-    else: 
+    else:
         print("An error has occured")
 
 
