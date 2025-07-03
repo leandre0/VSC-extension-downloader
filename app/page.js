@@ -31,7 +31,7 @@ const Home = () => {
       <p>
         publisher: {publisher ? publisher : "Publisher ?"}
         <br />
-        name :{name ? name : "Extension ?"}
+        name: {name ? name : "Extension ?"}
       </p>
       <div className="border border-gray-300 rounded-md p-2 mb-4 width-full">
         <input
