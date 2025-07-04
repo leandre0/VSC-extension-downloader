@@ -37,8 +37,8 @@ jobs:
         mkdir -p ~/.ssh
         echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        # Prevent host key verification issues
         echo "Host *" >> ~/.ssh/config
+        echo "  IdentityFile ~/.ssh/id_rsa" >> ~/.ssh/config
         echo "  StrictHostKeyChecking no" >> ~/.ssh/config
 
     - name: Deploy via SSH with Jump Host
