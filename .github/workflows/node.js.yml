@@ -10,21 +10,45 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
-
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         node-version: [18.x, 20.x, 22.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
     - uses: actions/checkout@v4
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ci
-    - run: npm run build --if-present
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build (if present)
+      run: npm run build --if-present
+
+    - name: Setup SSH key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        # Prevent host key verification issues
+        echo "Host *" >> ~/.ssh/config
+        echo "  StrictHostKeyChecking no" >> ~/.ssh/config
+
+    - name: Deploy via SSH with Jump Host
+      run: |
+        # Set variables for clarity
+        SERVER_USER=${{ secrets.SERVER_USER }}
+        SERVER_HOST=${{ secrets.SERVER_HOST }}
+        JUMP_HOST=${{ secrets.JUMP_HOST }}
+        JUMP_USER=${{ secrets.JUMP_USER }}
+
+        # Copy files to the target server via the jump host using scp
+        scp -o ProxyJump=${JUMP_USER}@${JUMP_HOST} -r ./build ${SERVER_USER}@${SERVER_HOST}:/home/${SERVER_USER}/
+
