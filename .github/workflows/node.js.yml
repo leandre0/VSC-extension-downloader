@@ -46,5 +46,5 @@ jobs:
     - name: Deploy via SSH with Jump Host
       run: |
         # Copy files to the target server via the jump host using scp
-        scp -o ProxyJump=${secrets.JUMP_USER}@${secrets.JUMP_HOST} -r ./build ${secrets.SERVER_USER}@${secrets.SERVER_HOST}:/home/${secrets.SERVER_USER}/
+        scp -o ProxyJump=${ secrets.JUMP_USER }@${ secrets.JUMP_HOST } -r ./build ${ secrets.SERVER_USER }@${ secrets.SERVER_HOST }:/home/${ secrets.SERVER_USER }/
 
