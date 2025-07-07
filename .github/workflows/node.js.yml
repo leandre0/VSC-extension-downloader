@@ -31,23 +31,17 @@ jobs:
 
     - name: Build (if present)
       run: npm run build --if-present
-
+      
     - name: Setup SSH key
-      shell: bash
-      env:
-        DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
       run: |
-        install -d -m 700 ~/.ssh
-        printf "%s\n" "$DEPLOY_KEY" > ~/.ssh/id_rsa
+        mkdir -p ~/.ssh
+        echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-    
-        ssh-keyscan -T 5 -H ${{ secrets.JUMP_HOST }} >> ~/.ssh/known_hosts || echo "Jump host unreachable"
-        ssh-keyscan -T 5 -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts || echo "Server host unreachable"
-
+        ssh-keyscan -H ${{ secrets.JUMP_HOST }} >> ~/.ssh/known_hosts
+        ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
 
     - name: Deploy via SSH with Jump Host
       run: |
-
         # Copy files to the target server via the jump host using scp
         scp -o ProxyJump=${secrets.JUMP_USER}@${secrets.JUMP_HOST} -r ./build ${secrets.SERVER_USER}@${secrets.SERVER_HOST}:/home/${secrets.SERVER_USER}/
 
