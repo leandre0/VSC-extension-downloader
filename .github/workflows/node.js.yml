@@ -62,3 +62,8 @@ jobs:
             -i ~/.ssh/id_rsa -r ./build \
             vsc@${{ secrets.SERVER_HOST }}:/home/vsc/build
 
+      - name: SSH into server and run deployment script
+        run: |
+          ssh -o "ProxyJump gateway@${{ secrets.JUMP_HOST }}" \
+            -i ~/.ssh/id_rsa vsc@${{ secrets.SERVER_HOST }} \
+            'bash -s' < ./scripts/deploy.sh
