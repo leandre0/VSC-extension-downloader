@@ -5,9 +5,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build-and-deploy:
@@ -18,46 +18,46 @@ jobs:
         node-version: [18.x, 20.x, 22.x]
 
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20.x
-        cache: 'npm'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: "npm"
 
-    - name: Install dependencies
-      run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Build project
-      run: npm run build --if-present
+      - name: Build project
+        run: npm run build --if-present
 
-    - name: Setup SSH key
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
 
-    - name: Create SSH config
-      run: |
-        mkdir -p ~/.ssh
-        cat <<EOF > ~/.ssh/config
-        Host ${{ secrets.JUMP_HOST }}
-            StrictHostKeyChecking no
-            UserKnownHostsFile /dev/null
-    
-        Host ${{ secrets.SERVER_HOST }}
-            ProxyJump gateway@${{ secrets.JUMP_HOST }}
-            IdentityFile ~/.ssh/id_rsa
-            StrictHostKeyChecking no
-            UserKnownHostsFile /dev/null
-        EOF
-        chmod 600 ~/.ssh/config
+      - name: Create SSH config
+        run: |
+          mkdir -p ~/.ssh
+          cat <<EOF > ~/.ssh/config
+          Host ${{ secrets.JUMP_HOST }}
+              StrictHostKeyChecking no
+              UserKnownHostsFile /dev/null
 
-    - name: Deploy via SCP with ProxyJump
-      run: |
-        scp \
-          -o "ProxyJump gateway@${{ secrets.JUMP_HOST }}" \
-          -i ~/.ssh/id_rsa -r ./build \
-          vsc@${{ secrets.SERVER_HOST }}:/home/vsc/next-app-build
+          Host ${{ secrets.SERVER_HOST }}
+              ProxyJump gateway@${{ secrets.JUMP_HOST }}
+              IdentityFile ~/.ssh/id_rsa
+              StrictHostKeyChecking no
+              UserKnownHostsFile /dev/null
+          EOF
+          chmod 600 ~/.ssh/config
+
+      - name: Deploy via SCP with ProxyJump
+        run: |
+          scp \
+            -o "ProxyJump gateway@${{ secrets.JUMP_HOST }}" \
+            -i ~/.ssh/id_rsa -r ./build \
+            vsc@${{ secrets.SERVER_HOST }}:/home/vsc/next-app-build
