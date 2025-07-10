@@ -61,3 +61,4 @@ jobs:
             -o "ProxyJump gateway@${{ secrets.JUMP_HOST }}" \
             -i ~/.ssh/id_rsa -r ./build \
             vsc@${{ secrets.SERVER_HOST }}:/home/vsc/build
+
