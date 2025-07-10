@@ -43,12 +43,12 @@ jobs:
       run: |
         mkdir -p ~/.ssh
         cat <<EOF > ~/.ssh/config
-        Host ssh.leandre.xyz
+        Host ${{ secrets.JUMP_HOST }}
             StrictHostKeyChecking no
             UserKnownHostsFile /dev/null
     
-        Host 192.168.1.104
-            ProxyJump gateway@ssh.leandre.xyz
+        Host ${{ secrets.SERVER_HOST }}
+            ProxyJump gateway@${{ secrets.JUMP_HOST }}
             IdentityFile ~/.ssh/id_rsa
             StrictHostKeyChecking no
             UserKnownHostsFile /dev/null
