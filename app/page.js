@@ -20,7 +20,7 @@ const Home = () => {
   return (
     <div className="flex flex-col justify-center p-4 outline-1 outline-gray-200">
       <h1 className="text-3xl font-bold mb-6 text-center text-blue-700">
-        TESTING CICD 2
+        VSIX Download URL Generator
       </h1>
       <div className="flex flex-row border border-gray-300 rounded-md p-2 mb-4 width-full">
         <h2>
