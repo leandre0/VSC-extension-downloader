@@ -6,5 +6,7 @@ experimenting with beautiful soup to automatically parse the publisher name and 
 
 maybe calling the url to check the status code before redirecting to it would be a great idea
 
+self hosted at https://vsc-extension-downloader.leandre.xyz
+
 ISSUES:
 on some repositories the file is already available to download, and the custom link doesn't work so trying to download it directly if the custom link doesn't work might be a good option
